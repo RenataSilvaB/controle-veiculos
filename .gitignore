@@ -1,0 +1,25 @@
+
+# Dependências
+node_modules/
+
+# Arquivos de compilação
+dist/
+build/
+coverage/
+
+# Configurações do Angular
+.angular/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
