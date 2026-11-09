@@ -1,18 +1,19 @@
 import express from "express";
+import veiculoRoutes from "./routes/veiculo.routes.js";
 
 const app = express();
 
 const PORT = 3000;
 
-// Permite receber dados em formato JSON
 app.use(express.json());
 
-// Rota inicial da API
 app.get("/", (req, res) => {
   res.send("API de Controle de Veículos está funcionando!");
 });
 
-// Inicia o servidor
+app.use("/veiculos", veiculoRoutes);
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Rota de veículos: http://localhost:${PORT}/veiculos`);
 });
