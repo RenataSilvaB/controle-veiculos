@@ -55,6 +55,14 @@ export class AppComponent implements OnInit {
           },
           error: (erro) => {
             console.error('Erro ao atualizar veículo:', erro);
+
+            Swal.fire({
+              title: 'Erro!',
+              text: 'Não foi possível atualizar o veículo. Tente novamente.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#243b53',
+            });
           },
         });
     } else {
@@ -74,6 +82,14 @@ export class AppComponent implements OnInit {
         },
         error: (erro) => {
           console.error('Erro ao cadastrar veículo:', erro);
+
+          Swal.fire({
+            title: 'Erro!',
+            text: 'Não foi possível cadastrar o veículo. Tente novamente.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#243b53',
+          });
         },
       });
     }
@@ -142,7 +158,13 @@ export class AppComponent implements OnInit {
           error: (erro) => {
             console.error('Erro ao excluir veículo:', erro);
 
-            Swal.fire('Erro!', 'Não foi possível excluir o veículo.', 'error');
+            Swal.fire({
+              title: 'Erro!',
+              text: 'Não foi possível excluir o veículo. Tente novamente.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#243b53',
+            });
           },
         });
       }
