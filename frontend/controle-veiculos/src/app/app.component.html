@@ -1,9 +1,64 @@
-
 <div class="container">
   <h1>Controle de Veículos</h1>
 
   <p>Gerencie os veículos cadastrados no sistema.</p>
 
+  <button (click)="mostrarFormulario = !mostrarFormulario">Novo veículo</button>
+
+  <div *ngIf="mostrarFormulario" class="formulario">
+    <h2>Cadastrar veículo</h2>
+
+    <form (ngSubmit)="cadastrarVeiculo()">
+      <input
+        type="text"
+        name="marca"
+        placeholder="Marca"
+        [(ngModel)]="novoVeiculo.marca"
+        required
+      />
+
+      <input
+        type="text"
+        name="modelo"
+        placeholder="Modelo"
+        [(ngModel)]="novoVeiculo.modelo"
+        required
+      />
+
+      <input
+        type="number"
+        name="ano"
+        placeholder="Ano"
+        [(ngModel)]="novoVeiculo.ano"
+        required
+      />
+
+      <input
+        type="text"
+        name="placa"
+        placeholder="Placa"
+        [(ngModel)]="novoVeiculo.placa"
+        required
+      />
+
+      <input
+        type="text"
+        name="cor"
+        placeholder="Cor"
+        [(ngModel)]="novoVeiculo.cor"
+        required
+      />
+
+      <select name="status" [(ngModel)]="novoVeiculo.status">
+        <option value="Disponível">Disponível</option>
+        <option value="Vendido">Vendido</option>
+      </select>
+
+      <button type="submit">
+        {{ veiculoEditandoId ? "Atualizar veículo" : "Salvar veículo" }}
+      </button>
+    </form>
+  </div>
   <h2>Veículos cadastrados</h2>
 
   <table>
@@ -16,6 +71,7 @@
         <th>Placa</th>
         <th>Cor</th>
         <th>Status</th>
+        <th>Ações</th>
       </tr>
     </thead>
 
@@ -28,6 +84,12 @@
         <td>{{ veiculo.placa }}</td>
         <td>{{ veiculo.cor }}</td>
         <td>{{ veiculo.status }}</td>
+        <td>
+           <div class="acoes">
+          <button (click)="editarVeiculo(veiculo)">Editar</button>
+        <button (click)="excluirVeiculo(veiculo.id)">Excluir</button>
+        </div>
+        </td>
       </tr>
     </tbody>
   </table>
