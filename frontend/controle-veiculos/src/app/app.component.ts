@@ -9,10 +9,9 @@ import Swal from 'sweetalert2';
   selector: 'app-root',
   imports: [CommonModule, FormsModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-
   veiculos: Veiculo[] = [];
 
   constructor(private veiculoService: VeiculoService) {}
@@ -28,132 +27,125 @@ export class AppComponent implements OnInit {
       },
       error: (erro) => {
         console.error('Erro ao buscar veículos:', erro);
-      }
+      },
     });
   }
 
+  cadastrarVeiculo(): void {
+    if (this.veiculoEditandoId !== null) {
+      this.veiculoService
+        .atualizarVeiculo(this.veiculoEditandoId, this.novoVeiculo)
+        .subscribe({
+          next: (veiculoAtualizado) => {
+            const indice = this.veiculos.findIndex(
+              (veiculo) => veiculo.id === this.veiculoEditandoId,
+            );
 
-cadastrarVeiculo(): void {
+            this.veiculos[indice] = veiculoAtualizado;
 
-  if (this.veiculoEditandoId !== null) {
+            this.finalizarFormulario();
 
-    this.veiculoService.atualizarVeiculo(
-      this.veiculoEditandoId,
-      this.novoVeiculo
-    ).subscribe({
-      next: (veiculoAtualizado) => {
+            Swal.fire({
+              title: 'Sucesso!',
+              text: 'Veículo atualizado com sucesso!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#243b53',
+            });
+          },
+          error: (erro) => {
+            console.error('Erro ao atualizar veículo:', erro);
+          },
+        });
+    } else {
+      this.veiculoService.cadastrarVeiculo(this.novoVeiculo).subscribe({
+        next: (veiculoCadastrado) => {
+          this.veiculos.push(veiculoCadastrado);
 
-        const indice = this.veiculos.findIndex(
-          veiculo => veiculo.id === this.veiculoEditandoId
-        );
+          this.finalizarFormulario();
 
-        this.veiculos[indice] = veiculoAtualizado;
-
-        this.finalizarFormulario();
-
-      },
-      error: (erro) => {
-        console.error('Erro ao atualizar veículo:', erro);
-      }
-    });
-
-  } else {
-
-    this.veiculoService.cadastrarVeiculo(this.novoVeiculo).subscribe({
-      next: (veiculoCadastrado) => {
-
-        this.veiculos.push(veiculoCadastrado);
-
-        this.finalizarFormulario();
-
-      },
-      error: (erro) => {
-        console.error('Erro ao cadastrar veículo:', erro);
-      }
-    });
-
+          Swal.fire({
+            title: 'Sucesso!',
+            text: 'Veículo cadastrado com sucesso!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#243b53',
+          });
+        },
+        error: (erro) => {
+          console.error('Erro ao cadastrar veículo:', erro);
+        },
+      });
+    }
   }
-}
 
-editarVeiculo(veiculo: Veiculo): void {
-  this.veiculoEditandoId = veiculo.id;
+  editarVeiculo(veiculo: Veiculo): void {
+    this.veiculoEditandoId = veiculo.id;
 
-  this.novoVeiculo = { ...veiculo };
+    this.novoVeiculo = { ...veiculo };
 
-  this.mostrarFormulario = true;
-}
+    this.mostrarFormulario = true;
+  }
 
-mostrarFormulario = false;
-veiculoEditandoId: number | null = null;
+  mostrarFormulario = false;
+  veiculoEditandoId: number | null = null;
 
-novoVeiculo: Veiculo = {
-  id: 0,
-  marca: '',
-  modelo: '',
-  ano: 0,
-  placa: '',
-  cor: '',
-  status: 'Disponível'
-};
-
-
-finalizarFormulario(): void {
-  this.novoVeiculo = {
+  novoVeiculo: Veiculo = {
     id: 0,
     marca: '',
     modelo: '',
     ano: 0,
     placa: '',
     cor: '',
-    status: 'Disponível'
+    status: 'Disponível',
   };
 
-  this.veiculoEditandoId = null;
-  this.mostrarFormulario = false;
-}
+  finalizarFormulario(): void {
+    this.novoVeiculo = {
+      id: 0,
+      marca: '',
+      modelo: '',
+      ano: 0,
+      placa: '',
+      cor: '',
+      status: 'Disponível',
+    };
 
-excluirVeiculo(id: number): void {
+    this.veiculoEditandoId = null;
+    this.mostrarFormulario = false;
+  }
 
-  Swal.fire({
-    title: 'Deseja excluir este veículo?',
-    text: 'Essa ação não poderá ser desfeita.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sim, excluir',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6'
-  }).then((resultado) => {
+  excluirVeiculo(id: number): void {
+    Swal.fire({
+      title: 'Deseja excluir este veículo?',
+      text: 'Essa ação não poderá ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.veiculoService.excluirVeiculo(id).subscribe({
+          next: () => {
+            this.veiculos = this.veiculos.filter(
+              (veiculo) => veiculo.id !== id,
+            );
 
-    if (resultado.isConfirmed) {
+            Swal.fire(
+              'Excluído!',
+              'O veículo foi excluído com sucesso.',
+              'success',
+            );
+          },
+          error: (erro) => {
+            console.error('Erro ao excluir veículo:', erro);
 
-      this.veiculoService.excluirVeiculo(id).subscribe({
-        next: () => {
-
-          this.veiculos = this.veiculos.filter(
-            veiculo => veiculo.id !== id
-          );
-
-          Swal.fire(
-            'Excluído!',
-            'O veículo foi excluído com sucesso.',
-            'success'
-          );
-
-        },
-        error: (erro) => {
-          console.error('Erro ao excluir veículo:', erro);
-
-          Swal.fire(
-            'Erro!',
-            'Não foi possível excluir o veículo.',
-            'error'
-          );
-        }
-      });
-
-    }
-
-  });
-}
+            Swal.fire('Erro!', 'Não foi possível excluir o veículo.', 'error');
+          },
+        });
+      }
+    });
+  }
 }
