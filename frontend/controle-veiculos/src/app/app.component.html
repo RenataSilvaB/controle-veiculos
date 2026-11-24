@@ -8,12 +8,22 @@
   <div *ngIf="mostrarFormulario" class="formulario">
     <h2>Cadastrar veículo</h2>
 
-    <form (ngSubmit)="cadastrarVeiculo()">
+    <form
+      #formulario="ngForm"
+      (ngSubmit)="formulario.valid && cadastrarVeiculo()"
+    >
+      <p
+        *ngIf="formulario.submitted && formulario.invalid"
+        class="erro-validacao"
+      >
+        Verifique os campos. Existem informações obrigatórias ou inválidas.
+      </p>
       <input
         type="text"
         name="marca"
         placeholder="Marca"
         [(ngModel)]="novoVeiculo.marca"
+        #marca="ngModel"
         required
       />
 
@@ -22,6 +32,7 @@
         name="modelo"
         placeholder="Modelo"
         [(ngModel)]="novoVeiculo.modelo"
+        #modelo="ngModel"
         required
       />
 
@@ -30,6 +41,9 @@
         name="ano"
         placeholder="Ano"
         [(ngModel)]="novoVeiculo.ano"
+        #ano="ngModel"
+        min="1886"
+        max="2026"
         required
       />
 
@@ -38,6 +52,10 @@
         name="placa"
         placeholder="Placa"
         [(ngModel)]="novoVeiculo.placa"
+        #placa="ngModel"
+        pattern="^[A-Za-z]{3}[0-9][A-Za-z0-9][0-9]{2}$"
+        minlength="7"
+        maxlength="7"
         required
       />
 
@@ -46,10 +64,11 @@
         name="cor"
         placeholder="Cor"
         [(ngModel)]="novoVeiculo.cor"
+        #cor="ngModel"
         required
       />
 
-      <select name="status" [(ngModel)]="novoVeiculo.status">
+      <select name="status" [(ngModel)]="novoVeiculo.status"  #status="ngModel"  required>
         <option value="Disponível">Disponível</option>
         <option value="Vendido">Vendido</option>
       </select>
@@ -85,10 +104,10 @@
         <td>{{ veiculo.cor }}</td>
         <td>{{ veiculo.status }}</td>
         <td>
-           <div class="acoes">
-          <button (click)="editarVeiculo(veiculo)">Editar</button>
-        <button (click)="excluirVeiculo(veiculo.id)">Excluir</button>
-        </div>
+          <div class="acoes">
+            <button (click)="editarVeiculo(veiculo)">Editar</button>
+            <button (click)="excluirVeiculo(veiculo.id)">Excluir</button>
+          </div>
         </td>
       </tr>
     </tbody>
